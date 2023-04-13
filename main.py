@@ -34,25 +34,22 @@ def get_max_duration(year: int, platform: str, duration_type: str):
         return {'pelicula': 'Intenta poner valores correctos'}
 
 ##################################################################################################################################
-################ NO FUNCIONA ###################
 @app.get('/get_score_count/{plataforma}/{scored}/{anio}')
-def get_score_count(platform, scored, year):
+def get_score_count(plataforma: str, scored: float, year: int):
     ''' 
     devuelve un int con el total de películas con puntaje mayor a XX en determinado año
     '''
-    # cargar el archivo CSV en un DataFrame
-    platform = platform.lower()[0]#Aclaro indice en 0 para que tome la primer letra
-    resultado = df[(df['release_year']==year) & (df['id'].str.startswith(platform)) & (df['rating_y']> scored) & (df['type'] == 'movie')]
-    cantidad = resultado.shape[0]
-    return {
-            'plataforma': platform,
-            'cantidad': cantidad,
+    # Me aseguro que si el usuario escribe en mayus se pase a minusculas, en el caso de plataform solo me interesa la primer letra.
+    platform = plataforma.lower()[0]
+    # Filtro por año de lanzamiento, plataforma aclarando que solo tenga en cuenta la primer letra de la columna id y que el tipo sea 'movie'.
+    data_filtrada = df[(df['id'].str.startswith(platform)) & (df['release_year'] == year) & (df['type'] == 'movie')]
+    # Cuento la cantidad de películas que tienen el rating deseado
+    cantidad = data_filtrada[data_filtrada['rating_y'] > scored]['id'].count()
+    return {'plataforma': plataforma,
+            'cantidad': int(cantidad),
             'anio': year,
-            'score': scored
-            }
-
+            'score': scored}
 ##################################################################################################################################
-
 @app.get('/get_count_platform/{plataforma}')
 def get_count_platform(platform: str):
     '''
@@ -66,7 +63,6 @@ def get_count_platform(platform: str):
     return {'plataforma': platform, 'peliculas': cantidad}
 
 ##################################################################################################################################
-
 @app.get('/get_actor/{plataforma}/{anio}')
 def get_actor(platforma: str, year: int):
     ''' 
@@ -103,7 +99,6 @@ def get_actor(platforma: str, year: int):
                 'apariciones': "No hay datos disponibles"}
 
 ##################################################################################################################################
-
 @app.get('/get_contents/{rating}')
 def get_contents(rating: str):
     ''' 
@@ -117,7 +112,6 @@ def get_contents(rating: str):
     return {'rating': rating, 'contenido': cantidad}
 
 ##################################################################################################################################
-
 @app.get('/prod_per_county/{tipo}/{pais}/{anio}')
 def prod_per_country(tipo: str, pais: str, year: int):
     ''' 
