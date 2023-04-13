@@ -48,7 +48,7 @@ def get_score_count(platform, scored, year):
             'plataforma': platform,
             'cantidad': cantidad,
             'anio': year,
-            'score': float(scored)
+            'score': scored
             }
 
 ##################################################################################################################################
@@ -66,7 +66,6 @@ def get_count_platform(platform: str):
     return {'plataforma': platform, 'peliculas': cantidad}
 
 ##################################################################################################################################
-################ NO FUNCIONA ###################
 
 @app.get('/get_actor/{plataforma}/{anio}')
 def get_actor(platforma: str, year: int):
@@ -103,37 +102,6 @@ def get_actor(platforma: str, year: int):
                 'actor': "No hay datos disponibles",
                 'apariciones': "No hay datos disponibles"}
 
-# @app.get('/get_actor/{plataforma}/{anio}')
-# def get_actor(platform: str, year: int):
-#     df = pd.read_csv('dataset_plataformas.csv')
-
-#     # Filtro por plataforma y año
-#     platform = platform.lower()[0]
-
-#     df = df[(df["id"].str.startswith(platform)) & (df["release_year"] == year) & (df["type"] == "movie")]
-
-#     # filtro una lista con todos los actores
-#     # Utilizo flatten para obtener un array de numpy unidimensional con todos los valores.
-#     # De esta manera, obtengo una lista de todos los actores presentes en el dataframe, sin importar en qué columna aparezcan.
-#     actores = df["cast"].str.split(", ", expand=True).values.flatten()
-
-#     # Compruebo si la lista de actores está vacía O tenemos valores en NaN. Si esta condicion se cumple devuelvo "no hay datos".
-#     if actores.size == 0 or pd.isnull(actores).all():
-#         return "no hay datos"
-
-#     # Contar la cantidad de veces que aparece cada actor
-#     cantidad_actores = pd.Series(actores).value_counts()
-
-#     # Obtener el actor más repetido
-#     top_actor = cantidad_actores.idxmax()
-
-#     #obtengo el valor de apariciones
-#     primer_valor = cantidad_actores.max()
-#     # Devolver el nombre del actor
-#     return {'plataforma': platform,
-#             'anio': year,
-#             'actor': top_actor,
-#             'apariciones': primer_valor}
 ##################################################################################################################################
 
 @app.get('/get_contents/{rating}')
