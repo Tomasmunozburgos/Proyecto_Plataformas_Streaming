@@ -125,7 +125,7 @@ def prod_per_country(tipo: str, pais: str, year: int):
     
     return {'pais': pais,
             'anio': year,
-            'apariciones': int(cantidad)
+            'pelicuas': int(cantidad)
             }
 
 ##################################################################################################################################
