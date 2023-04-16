@@ -6,8 +6,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # cargar el archivo CSV en un DataFrame
-df = pd.read_csv('dataset_plataformas.csv')
-
+df = pd.read_csv('dataset_plataformas.csv',usecols=['id', 'type', 'title', 'cast', 'country','release_year', 'rating','listed_in', 'duration_int', 'duration_type', 'score'])
+df_movie = pd.read_csv('df_ml.csv')
 app = FastAPI()
 
 #http://127.0.0.1:8000
@@ -132,9 +132,6 @@ def prod_per_country(tipo: str, pais: str, year: int):
 
 ##################################################################################################################################
 # Eliminar columnas no necesarias y filtrar por películas
-
-df_movie = df.drop(columns=['show_id', 'cast', 'director', 'country', 'description', 'release_year', 'date_added', 'rating', 'duration_int', 'duration_type', 'id']) 
-df_movie = df_movie[df_movie['type'] == 'movie']
 
 @app.get('/get_recomendation/{title}')
 def get_recomendation(title: str):
