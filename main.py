@@ -2,6 +2,8 @@ from fastapi import FastAPI
 import pandas as pd
 import numpy as np
 from collections import Counter
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 # cargar el archivo CSV en un DataFrame
 df = pd.read_csv('dataset_plataformas.csv')
@@ -44,7 +46,7 @@ def get_score_count(plataforma: str, scored: float, year: int):
     # Filtro por año de lanzamiento, plataforma aclarando que solo tenga en cuenta la primer letra de la columna id y que el tipo sea 'movie'.
     data_filtrada = df[(df['id'].str.startswith(platform)) & (df['release_year'] == year) & (df['type'] == 'movie')]
     # Cuento la cantidad de películas que tienen el rating deseado
-    cantidad = data_filtrada[data_filtrada['rating_y'] > scored]['id'].count()
+    cantidad = data_filtrada[data_filtrada['score'] > scored]['id'].count()
     return {'plataforma': plataforma,
             'cantidad': int(cantidad),
             'anio': year,
@@ -129,3 +131,25 @@ def prod_per_country(tipo: str, pais: str, year: int):
             }
 
 ##################################################################################################################################
+
+@app.get('/get_recomendation/{title}')
+def get_recomendation(title: str):
+    # Eliminar columnas no necesarias y filtrar por películas
+    df = df.drop(columns=['show_id', 'cast', 'director', 'country', 'description', 'release_year', 'date_added', 'rating', 'duration_int', 'duration_type', 'id']) 
+    df = df[df['type'] == 'movie']
+    # Crear matriz de similitud
+    tfidf_vectorizer  = TfidfVectorizer(stop_words='english')
+    X_train = tfidf_vectorizer.fit_transform(df['listed_in'] + " " + df['score'].fillna("").astype(str))
+    cosine_sim = cosine_similarity(X_train, X_train)
+    # Encontrar índice de la película dada
+    top_5 = df.index[df["title"]== title.lower()].to_list()[0]
+    # Crear lista de recomendaciones
+    recomendation = list(enumerate(cosine_sim[top_5]))
+    recomendation = sorted(recomendation, key=lambda x: x[1], reverse=True)
+    recomendation = [i for i in recomendation if df.index[i[0]]!= top_5]
+    recomendation = recomendation[:5]
+    # Seleccionar títulos y score de las películas recomendadas
+    respuesta = df.iloc[[i[0] for i in recomendation]][["title", "score"]]
+    # Ordenar por score descendente y devolver lista de títulos
+    respuesta = respuesta.sort_values(by="score", ascending=False)["title"].tolist()
+    return {"titulo": respuesta}
