@@ -135,11 +135,11 @@ def prod_per_country(tipo: str, pais: str, year: int):
 @app.get('/get_recomendation/{title}')
 def get_recomendation(title: str):
     # Eliminar columnas no necesarias y filtrar por películas
-    df = df.drop(columns=['show_id', 'cast', 'director', 'country', 'description', 'release_year', 'date_added', 'rating', 'duration_int', 'duration_type', 'id']) 
-    df = df[df['type'] == 'movie']
+    df_movie = df.drop(columns=['show_id', 'cast', 'director', 'country', 'description', 'release_year', 'date_added', 'rating', 'duration_int', 'duration_type', 'id']) 
+    df_movie = df_movie[df_movie['type'] == 'movie']
     # Crear matriz de similitud
     tfidf_vectorizer  = TfidfVectorizer(stop_words='english')
-    X_train = tfidf_vectorizer.fit_transform(df['listed_in'] + " " + df['score'].fillna("").astype(str))
+    X_train = tfidf_vectorizer.fit_transform(df_movie['listed_in'] + " " + df_movie['score'].fillna("").astype(str))
     cosine_sim = cosine_similarity(X_train, X_train)
     # Encontrar índice de la película dada
     top_5 = df.index[df["title"]== title.lower()].to_list()[0]
@@ -149,7 +149,9 @@ def get_recomendation(title: str):
     recomendation = [i for i in recomendation if df.index[i[0]]!= top_5]
     recomendation = recomendation[:5]
     # Seleccionar títulos y score de las películas recomendadas
-    respuesta = df.iloc[[i[0] for i in recomendation]][["title", "score"]]
+    peliculas_recomendadas = df.iloc[[i[0] for i in recomendation]][["title", "score"]]
     # Ordenar por score descendente y devolver lista de títulos
-    respuesta = respuesta.sort_values(by="score", ascending=False)["title"].tolist()
-    return {"titulo": respuesta}
+    peliculas_recomendadas = peliculas_recomendadas.sort_values(by="score", ascending=False)["title"].tolist()
+    return {"titulo": peliculas_recomendadas}
+
+##################################################################################################################################
