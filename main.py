@@ -140,7 +140,7 @@ df_movie = df_movie[df_movie['type'] == 'movie']
 def get_recomendation(title: str):
     # Crear matriz de similitud
     tfidf_vectorizer  = TfidfVectorizer(stop_words='english')
-    X_train = tfidf_vectorizer.fit_transform(df_movie['listed_in'])
+    X_train = tfidf_vectorizer.fit_transform(df_movie['title'])
     cosine_sim = cosine_similarity(X_train, X_train)
     # Encontrar índice de la película dada
     top_5 = df.index[df["title"]== title.lower()].to_list()[0]
