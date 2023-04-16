@@ -137,7 +137,7 @@ def prod_per_country(tipo: str, pais: str, year: int):
 def get_recomendation(title: str):
     # Crear matriz de similitud
     tfidf_vectorizer  = TfidfVectorizer(stop_words='english')
-    X_train = tfidf_vectorizer.fit_transform(df_movie['title'])
+    X_train = tfidf_vectorizer.fit_transform(df_movie['listed_in'])
     cosine_sim = cosine_similarity(X_train, X_train)
     # Encontrar índice de la película dada
     top_5 = df.index[df["title"]== title.lower()].to_list()[0]
@@ -147,9 +147,26 @@ def get_recomendation(title: str):
     recomendation = [i for i in recomendation if df.index[i[0]]!= top_5]
     recomendation = recomendation[:5]
     # Seleccionar títulos y score de las películas recomendadas
-    peliculas_recomendadas = df_movie.iloc[[i[0] for i in recomendation]][["title", "score"]]
+    peliculas_recomendadas = df_movie.iloc[[i[0] for i in recomendation]][["title"]]
     # Ordenar por score descendente y devolver lista de títulos
-    peliculas_recomendadas = peliculas_recomendadas.sort_values(by="score", ascending=False)["title"].tolist()
+    # peliculas_recomendadas = peliculas_recomendadas.sort_values(by="score", ascending=False)["title"].tolist()
     return {"titulo": peliculas_recomendadas}
+    # Crear matriz de similitud
+    # tfidf_vectorizer  = TfidfVectorizer(stop_words='english')
+    # X_train = tfidf_vectorizer.fit_transform(df_movie['title'])
+    # cosine_sim = cosine_similarity(X_train, X_train)
+    # # Encontrar índice de la película dada
+    # top_5 = df.index[df["title"]== title.lower()].to_list()[0]
+    # # Crear lista de recomendaciones
+    # recomendation = list(enumerate(cosine_sim[top_5]))
+    # recomendation = sorted(recomendation, key=lambda x: x[1], reverse=True)
+    # recomendation = [i for i in recomendation if df.index[i[0]]!= top_5]
+    # recomendation = recomendation[:5]
+    # # Seleccionar títulos y score de las películas recomendadas
+    # peliculas_recomendadas = df_movie.iloc[[i[0] for i in recomendation]][["title", "score"]]
+    # # Ordenar por score descendente y devolver lista de títulos
+    # peliculas_recomendadas = peliculas_recomendadas.sort_values(by="score", ascending=False)["title"].tolist()
+    # return {"titulo": peliculas_recomendadas}
+
 
 ##################################################################################################################################
