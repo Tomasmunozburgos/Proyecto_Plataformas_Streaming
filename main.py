@@ -115,7 +115,7 @@ def prod_per_country(tipo: str, pais: str, year: int):
     cantidad = len(df_filtrado)
     return {'pais': pais,
             'anio': year,
-            'pelicuas': int(cantidad)
+            'contenido': int(cantidad)
             }
 
 ##################################################################################################################################
