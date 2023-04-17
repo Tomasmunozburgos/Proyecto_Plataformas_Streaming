@@ -5,7 +5,7 @@ Primer proyecto de la carrera Data Science de Henry.
 
 ## Descripción
 
-Me situo en el rol de un Data Scientist en una empresa que provee servicios de agregación de plataformas de streaming. Mi objetivo es desarrollar un modelo de Machine Learning (ML) que elabore un sistema de recomendación de títulos provenientes de las plataformas.
+Me situo en el rol de un Data Scientist en una empresa que provee servicios de agregación de plataformas de streaming. EL objetivo es desarrollar un modelo de Machine Learning (ML) que elabore un sistema de recomendación de títulos provenientes de las plataformas.
 ## Principales Tareas
 
 #### Proceso de ETL (Extract, Transform and Load):
